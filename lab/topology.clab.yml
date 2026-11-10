@@ -29,18 +29,22 @@ topology:
     dhcp:
       exec:
         - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
         - ip link set eth1 up
     victim1:
       exec:
         - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
         - ip link set eth1 up
     victim2:
       exec:
         - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
         - ip link set eth1 up
     attacker:
       exec:
         - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
         - ip link set eth1 up
 
   links:
