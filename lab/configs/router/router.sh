@@ -20,3 +20,10 @@ ip -6 addr add 2001:db8:10:10::1/64 dev eth1 nodad
 # VLAN 20 (servers)
 ip link set eth2 up
 ip -6 addr add 2001:db8:10:20::1/64 dev eth2 nodad
+# --- Router Advertisements ---
+# radvd can refuse a config file that is group-writable, as bind-mounted files often are,
+# so start it from a clean root-owned copy.
+cp /config/radvd.conf /etc/radvd.conf
+chown root:root /etc/radvd.conf
+chmod 644 /etc/radvd.conf
+radvd -C /etc/radvd.conf -p /run/radvd.pid -m logfile -l /var/log/radvd.log
