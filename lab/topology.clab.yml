@@ -1,0 +1,54 @@
+name: ipv6lab
+
+topology:
+  defaults:
+    kind: linux
+    image: ipv6lab:1.0
+
+  nodes:
+    router:
+      binds:
+        - configs/router:/config:ro
+      exec:
+        - sh /config/router.sh
+
+    br-hosts:
+      binds:
+        - configs/switch:/config:ro
+      exec:
+        - sh /config/bridge.sh eth1 eth2 eth3 eth4
+
+    br-srv:
+      binds:
+        - configs/switch:/config:ro
+      exec:
+        - sh /config/bridge.sh eth1 eth2
+
+    # dhcp, victim1, victim2, attacker: minimal setup only (IPv6 on, link up).
+    # Ramin owns their real configuration (Kea, dhclient, attacker address).
+    dhcp:
+      exec:
+        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - ip link set eth1 up
+    victim1:
+      exec:
+        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - ip link set eth1 up
+    victim2:
+      exec:
+        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - ip link set eth1 up
+    attacker:
+      exec:
+        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
+        - ip link set eth1 up
+
+  links:
+    # VLAN 10, port order imposed by the contract (section 4)
+    - endpoints: ["router:eth1",   "br-hosts:eth1"]   # trusted port
+    - endpoints: ["victim1:eth1",  "br-hosts:eth2"]
+    - endpoints: ["victim2:eth1",  "br-hosts:eth3"]
+    - endpoints: ["attacker:eth1", "br-hosts:eth4"]
+    # VLAN 20
+    - endpoints: ["router:eth2",   "br-srv:eth1"]
+    - endpoints: ["dhcp:eth1",     "br-srv:eth2"]
