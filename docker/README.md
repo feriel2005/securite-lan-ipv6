@@ -1,1 +1,3 @@
-# docker/ : Dockerfile et image commune (Ramin, Ons)
+# Image du lab (ipv6lab)
+
+Ce dossier contient le Dockerfile de l'image commune utilisée par tous les nœuds du lab (router, dhcp, victim1, victim2, attacker et les deux ponts). Elle se construit avec `sh docker/build.sh`, qui crée `ipv6lab:1.0` et `ipv6lab:latest` ; tout le monde doit construire à partir de ce même Dockerfile pour avoir exactement les mêmes outils. L'image repose sur Ubuntu 24.04 et contient radvd, FRR, isc-dhcp-relay, isc-dhcp-client, Kea (kea-dhcp6-server), scapy, tshark, tcpdump, nftables, ndisc6 et les outils de diagnostic réseau usuels (iproute2, ping, traceroute, bridge-utils). Les Router Advertisements sont envoyés par radvd (configuré dans `lab/configs/router/radvd.conf`), tandis que FRR est installé mais n'est pas utilisé par défaut. Pour ajouter un paquet, modifiez le Dockerfile, reconstruisez l'image et prévenez l'équipe.
