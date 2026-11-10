@@ -27,3 +27,7 @@ cp /config/radvd.conf /etc/radvd.conf
 chown root:root /etc/radvd.conf
 chmod 644 /etc/radvd.conf
 radvd -C /etc/radvd.conf -p /run/radvd.pid -m logfile -l /var/log/radvd.log
+
+# --- DHCPv6 relay: VLAN 10 clients -> server in VLAN 20 ---
+setsid nohup dhcrelay -d -6 -l eth1 -u 2001:db8:10:20::10%eth2 \
+  > /var/log/dhcrelay.log 2>&1 &
