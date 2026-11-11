@@ -24,28 +24,30 @@ topology:
       exec:
         - sh /config/bridge.sh eth1 eth2
 
-    # dhcp, victim1, victim2, attacker: minimal setup only (IPv6 on, link up).
-    # Ramin owns their real configuration (Kea, dhclient, attacker address).
+    # dhcp, victim1, victim2, attacker: configured by Ramin (Kea, dhclient).
     dhcp:
+      binds:
+        - configs/dhcp:/config:ro
       exec:
-        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
-        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
-        - ip link set eth1 up
+        - bash /config/start.sh
+
     victim1:
+      binds:
+        - configs/hosts:/config:ro
       exec:
-        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
-        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
-        - ip link set eth1 up
+        - bash /config/start.sh
+
     victim2:
+      binds:
+        - configs/hosts:/config:ro
       exec:
-        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
-        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
-        - ip link set eth1 up
+        - bash /config/start.sh
+
     attacker:
+      binds:
+        - configs/hosts:/config:ro
       exec:
-        - sysctl -w net.ipv6.conf.all.disable_ipv6=0
-        - sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
-        - ip link set eth1 up
+        - bash /config/start.sh
 
   links:
     # VLAN 10, port order imposed by the contract (section 4)
