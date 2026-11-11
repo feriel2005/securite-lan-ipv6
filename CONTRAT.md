@@ -188,21 +188,6 @@ Indicateurs du rapport : attaques réussies, taux de blocage, faux positifs, cac
 
 ---
 
-## Planning
-
-| Date | Étape |
-|---|---|
-| Ven 13/11, 20 h | Première version des diagrammes du rapport (tous) |
-| Sam 14 → Dim 15/11 | Assemblage, relecture croisée, PDF final |
-| **Lun 16/11** | **Rapport de conception** (PDF, lien Drive `groupe<numéro>` partagé avec le professeur) |
-| Ven 20/11 | Scripts d'attaque, `apply.sh`, scripts de mesure prêts |
-| Sam 21 → Dim 22/11 | Campagne « avant » |
-| Mar 24/11 | Pose des protections, test du trafic normal |
-| Mer 25 → Jeu 26/11 | Campagne « après » + contournements |
-| Ven 27/11 | CSV figé, graphes |
-| Sam 28 → Dim 29/11 | Démo, gel du code `v1.0`, test sur VM propre |
-| **Lun 30/11** | **Remise finale** (code, lab YAML, CSV avant/après, démo) |
-
 ## Livrables
 
 - Le fichier de topologie (lab reproductible)
@@ -212,7 +197,6 @@ Indicateurs du rapport : attaques réussies, taux de blocage, faux positifs, cac
 
 ---
 
-## Glossaire
 
 - **Conteneur** : « mini-machine Linux » légère avec ses outils déjà installés.
 - **Image** : le modèle de cette machine ; même image pour tous, mêmes outils (radvd, Kea, FRR, scapy...).
