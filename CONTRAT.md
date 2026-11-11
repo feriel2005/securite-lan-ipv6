@@ -197,6 +197,7 @@ Indicateurs du rapport : attaques réussies, taux de blocage, faux positifs, cac
 
 ---
 
+## Glossaire
 
 - **Conteneur** : « mini-machine Linux » légère avec ses outils déjà installés.
 - **Image** : le modèle de cette machine ; même image pour tous, mêmes outils (radvd, Kea, FRR, scapy...).
