@@ -149,8 +149,6 @@ class AttaqueNASpoof:
             return
         if pkt[IPv6].dst != self.routeur_ip:
             return
-        if pkt[IPv6].src != self.victime_ip:
-            return
 
         self.paquets_detournes += 1
         if not self.empoisonnement_confirme:

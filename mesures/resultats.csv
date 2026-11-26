@@ -1,3 +1,6 @@
 phase,attaque,essai,succes,cache_voisins,latence_ms,faux_positif,commentaire,horodatage
-avant,na_spoof,1,1,,,0,"ns_vus=0, na_envoyes=30, paquets_detournes=0, mode=poison.",2026-11-26T17:31:35
-avant,na_spoof,1,1,,,0,"ns_vus=0, na_envoyes=30, paquets_detournes=0, mode=poison.",2026-11-26T17:34:05
+avant,na_spoof,1,0,,0.15,0,"ns_vus=13, na_envoyes=31, paquets_detournes=0, mode=poison.",2026-11-26T22:24:18
+avant,na_spoof,2,0,,0.41,0,"ns_vus=12, na_envoyes=28, paquets_detournes=0, mode=poison.",2026-11-26T22:26:17
+avant,na_spoof,1,0,,0.10,0,"ns_vus=12, na_envoyes=30, paquets_detournes=0, mode=mitm.",2026-11-26T22:28:10
+avant,ns_flood,1,1,,0.81,0,"adresses_envoyees=3000/3000, debit_vise=300.0pkt/s, ping_perdu=False. Relever le cache REEL avec mesurer_cache_routeur.py depuis l'hôte (docker exec router ip -6 neigh show dev eth1 | wc -l).",2026-11-26T22:33:40
+avant,na_spoof,1,0,,0.14,0,"ns_vus=14, na_envoyes=36, paquets_detournes=0, mode=mitm.",2026-11-26T22:39:33
