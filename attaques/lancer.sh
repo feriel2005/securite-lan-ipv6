@@ -1,5 +1,7 @@
 #!/bin/bash
 # attaques/lancer.sh — Lanceur interactif pour les attaques IPv6
+# il faut donner droits d'exécution à ce script : chmod +x attaques/lancer.sh une seule fois
+# PUIS le lancer avec sudo ./attaques/lancer.sh et choisir l'attaque à exécuter (1, 2 ou 3)
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -16,7 +18,7 @@ read -p "Choix [1/2/3/0] : " choix
 read -p "Phase (avant/apres) [avant] : " phase
 phase=${phase:-avant}
 
-read -p "Numéro d'essai [1] : " essai
+read -p "Numéro d'essai (nb répétitions du test) [1] : " essai
 essai=${essai:-1}
 
 read -p "Interface (eth1 dans le lab, lo en test) [eth1] : " iface

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 mesurer_cache_routeur.py — Relevé du cache de voisins du ROUTEUR, via docker exec.
-Projet 10 — Sécurité du lien local IPv6
 
 Ce n'est PAS un script d'attaque : il ne lance rien sur le routeur, il lit
 juste son état (`ip -6 neigh`) et complète le CSV commun avec le nombre

