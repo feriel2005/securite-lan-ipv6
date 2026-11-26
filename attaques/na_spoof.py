@@ -171,7 +171,7 @@ class AttaqueNASpoof:
 
     def _ecouter_detournement(self):
         """Thread 3 : surveille/relaie le trafic détourné (étapes 4 et 5)."""
-        filtre_bpf = f"ip6 and not icmp6"
+        filtre_bpf = "ip6"
         sniff(
             iface=self.iface, filter=filtre_bpf,
             prn=self._callback_detournement,
