@@ -58,3 +58,6 @@ topology:
     # VLAN 20
     - endpoints: ["router:eth2",   "br-srv:eth1"]
     - endpoints: ["dhcp:eth1",     "br-srv:eth2"]
+    # dhcp : l'adresse 2001:db8:10:20::10/64 et la route vers le VLAN 10 sont posées
+    # à chaque déploiement par configs/dhcp/start.sh (aucune manipulation manuelle).
+    dhcp:
