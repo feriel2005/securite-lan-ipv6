@@ -1,0 +1,32 @@
+=== déploiement 1 ===
+PASS  dhcp : adresse 2001:db8:10:20::10/64 sur eth1
+PASS  dhcp : route vers le VLAN 10 via 2001:db8:10:20::1
+PASS  dhcp : Kea lancé avec /config/kea-dhcp6.conf
+PASS  victim1 : adresse SLAAC (/64)
+PASS  victim1 : adresse DHCPv6 du pool (/128)
+PASS  victim1 : une seule route par défaut, via fe80::1
+PASS  victim2 : adresse SLAAC (/64)
+PASS  victim2 : adresse DHCPv6 du pool (/128)
+PASS  victim2 : une seule route par défaut, via fe80::1
+PASS  attacker : adresse SLAAC (/64)
+PASS  attacker : adresse DHCPv6 du pool (/128)
+PASS  attacker : une seule route par défaut, via fe80::1
+PASS  victim1 : ping du serveur DHCP à travers le routeur
+
+Résultat : 13 PASS, 0 FAIL
+=== déploiement 2 ===
+PASS  dhcp : adresse 2001:db8:10:20::10/64 sur eth1
+PASS  dhcp : route vers le VLAN 10 via 2001:db8:10:20::1
+PASS  dhcp : Kea lancé avec /config/kea-dhcp6.conf
+PASS  victim1 : adresse SLAAC (/64)
+PASS  victim1 : adresse DHCPv6 du pool (/128)
+PASS  victim1 : une seule route par défaut, via fe80::1
+PASS  victim2 : adresse SLAAC (/64)
+PASS  victim2 : adresse DHCPv6 du pool (/128)
+PASS  victim2 : une seule route par défaut, via fe80::1
+PASS  attacker : adresse SLAAC (/64)
+PASS  attacker : adresse DHCPv6 du pool (/128)
+PASS  attacker : une seule route par défaut, via fe80::1
+PASS  victim1 : ping du serveur DHCP à travers le routeur
+
+Résultat : 13 PASS, 0 FAIL
