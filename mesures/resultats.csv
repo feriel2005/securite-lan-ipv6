@@ -5,3 +5,15 @@ avant,na_spoof,1,0,,0.10,0,"ns_vus=12, na_envoyes=30, paquets_detournes=0, mode=
 avant,ns_flood,1,1,,0.81,0,"adresses_envoyees=3000/3000, debit_vise=300.0pkt/s, ping_perdu=False. Relever le cache REEL avec mesurer_cache_routeur.py depuis l'hôte (docker exec router ip -6 neigh show dev eth1 | wc -l).",2026-11-26T22:33:40
 avant,na_spoof,1,0,,0.14,0,"ns_vus=14, na_envoyes=36, paquets_detournes=0, mode=mitm.",2026-11-26T22:39:33
 avant,na_spoof,1,1,,0.14,0,"ns_vus=8, na_envoyes=23, paquets_detournes=97, mode=mitm.",2026-11-26T22:44:47
+avant,fake_ra,1,1,,,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=6, ns_vers_nous=0.",2026-11-27T10:41:48
+avant,fake_ra,1,0,,0.16,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=16, ns_vers_nous=0.",2026-11-27T10:46:07
+avant,fake_ra,1,0,,0.15,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=19, ns_vers_nous=0.",2026-11-27T10:46:45
+avant,fake_ra,2,0,,0.06,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=19, ns_vers_nous=0.",2026-11-27T11:06:09
+avant,fake_ra,1,0,,0.12,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=8, ns_vers_nous=0.",2026-11-27T11:07:00
+avant,fake_ra,2,0,,0.11,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=19, ns_vers_nous=0.",2026-11-27T11:07:31
+avant,fake_ra,2,1,,0.14,0,"mode=mitm, src=fe80::2, prf=high, ra_envoyes=18, ns_vers_nous=3.",2026-11-27T11:08:06
+avant,fake_ra,1,0,,0.20,0,"mode=dos, src=fe80::1, prf=high, ra_envoyes=10, ns_vers_nous=1.",2026-11-27T11:15:56
+avant,fake_ra,2,1,,0.08,0,"mode=dos, src=fe80::1, prf=high, ra_envoyes=30, ns_vers_nous=1.",2026-11-27T11:21:17
+avant,fake_dhcpv6,1,1,,,0,"solicits_vus=0, requests_vus=0, victoires=0, fake_dns=2001:db8:10:10::66.",2026-11-27T11:39:32
+avant,fake_dhcpv6,1,1,,0.14,0,"solicits_vus=1, requests_vus=1, victoires=1, fake_dns=2001:db8:10:10::66.",2026-11-27T11:41:38
+avant,fake_dhcpv6,2,0,,0.28,0,"solicits_vus=0, requests_vus=0, victoires=0, fake_dns=2001:db8:10:10::66.",2026-11-27T11:48:27
