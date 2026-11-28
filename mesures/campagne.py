@@ -6,8 +6,6 @@ import subprocess
 import sys
 import time
 
-# réutilise la lecture du cache déjà écrite par Lina/Feriel, sans dupliquer
-# le code ni leur fichier (attaques/mesurer_cache_routeur.py n'est pas modifié)
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "attaques"))
 from mesurer_cache_routeur import compter_cache  # noqa: E402
 
@@ -57,7 +55,7 @@ def cache_usurpe(victime):
 def demarrer_detecteur(phase, attaque, essai, duree, mac):
     os.makedirs(CAPTURES, exist_ok=True)
     chemin_log = os.path.join(CAPTURES, f"detection_{phase}_{attaque}_{essai}.log")
-    script = os.path.join(RACINE, "detection", "detecteur.py")
+    script = os.path.join(RACINE, "detection", "detection.py")
     log_f = open(chemin_log, "w")
     proc = subprocess.Popen(
         ["docker", "exec", "-i", f"{LAB}-br-hosts", "python3", "-",
@@ -81,9 +79,6 @@ def derniere_ligne_csv(phase, attaque, essai):
 
 
 def remplir_cache_latence(phase, attaque, essai, cache_voisins, latence_ms):
-    """Complète cache_voisins et/ou latence_ms dans la ligne (phase, attaque,
-    essai) déjà écrite par le script d'attaque, au lieu d'ajouter une ligne
-    séparée comme le fait mesurer_cache_routeur.py en ligne de commande."""
     idx, lignes = derniere_ligne_csv(phase, attaque, essai)
     if idx is None:
         print(f"    [ATTENTION] aucune ligne {phase},{attaque},{essai} à compléter.")
