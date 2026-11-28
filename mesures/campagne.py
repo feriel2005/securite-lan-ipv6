@@ -47,9 +47,11 @@ def route_vers_attaquant(victime):
 
 
 def cache_usurpe(victime):
-    """§6 : le cache de la victime associe l'IP du routeur à la MAC de l'attaquant."""
+    """§6 : le cache de la victime associe l'IP du routeur à la MAC de l'attaquant,
+    pas celle du vrai routeur."""
+    mac_att = docker_exec("attacker", "cat", "/sys/class/net/eth1/address", timeout=10).stdout.strip().lower()
     r = docker_exec(victime, "ip", "-6", "neigh", "show", ROUTEUR_IP, timeout=10)
-    return "FAILED" not in r.stdout and r.stdout.strip() != "" and "lladdr" in r.stdout
+    return bool(mac_att) and mac_att in r.stdout.lower()
 
 def dhcp_usurpe(victime, fake_dns="2001:db8:10:10::66"):
     """§6 : la victime a reçu la configuration du faux serveur (DNS falsifié)."""
