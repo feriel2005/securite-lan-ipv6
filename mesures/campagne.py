@@ -6,6 +6,11 @@ import subprocess
 import sys
 import time
 
+# réutilise la lecture du cache déjà écrite par Lina/Feriel, sans dupliquer
+# le code ni leur fichier (attaques/mesurer_cache_routeur.py n'est pas modifié)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "attaques"))
+from mesurer_cache_routeur import compter_cache  # noqa: E402
+
 LAB = "clab-ipv6lab"
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSV_PATH = os.path.join(RACINE, "mesures", "resultats.csv")
@@ -52,7 +57,7 @@ def cache_usurpe(victime):
 def demarrer_detecteur(phase, attaque, essai, duree, mac):
     os.makedirs(CAPTURES, exist_ok=True)
     chemin_log = os.path.join(CAPTURES, f"detection_{phase}_{attaque}_{essai}.log")
-    script = os.path.join(RACINE, "detection", "detection.py")
+    script = os.path.join(RACINE, "detection", "detecteur.py")
     log_f = open(chemin_log, "w")
     proc = subprocess.Popen(
         ["docker", "exec", "-i", f"{LAB}-br-hosts", "python3", "-",
@@ -73,6 +78,23 @@ def derniere_ligne_csv(phase, attaque, essai):
         if len(l) >= 3 and l[0] == phase and l[1] == attaque and l[2] == str(essai):
             return i, lignes
     return None, lignes
+
+
+def remplir_cache_latence(phase, attaque, essai, cache_voisins, latence_ms):
+    """Complète cache_voisins et/ou latence_ms dans la ligne (phase, attaque,
+    essai) déjà écrite par le script d'attaque, au lieu d'ajouter une ligne
+    séparée comme le fait mesurer_cache_routeur.py en ligne de commande."""
+    idx, lignes = derniere_ligne_csv(phase, attaque, essai)
+    if idx is None:
+        print(f"    [ATTENTION] aucune ligne {phase},{attaque},{essai} à compléter.")
+        return
+    if cache_voisins is not None and not lignes[idx][4]:
+        lignes[idx][4] = str(cache_voisins)
+    if latence_ms is not None and not lignes[idx][5]:
+        lignes[idx][5] = f"{latence_ms:.2f}"
+    with open(CSV_PATH, "w", newline="") as f:
+        csv.writer(f).writerows(lignes)
+    print(f"    [COMPLETE] ligne {idx + 1} : cache_voisins={cache_voisins}, latence_ms={latence_ms}")
 
 
 def corriger_succes(phase, attaque, essai, preuve_ok):
@@ -143,8 +165,12 @@ def un_essai(nom, phase, essai, duree, mac):
         preuve = cache_usurpe("victim1") or cache_usurpe("victim2")
     if preuve:
         corriger_succes(phase, nom, essai, True)
+    elif nom == "ns_flood":
+        nb_entrees, _ = compter_cache(f"{LAB}-router", "eth1")
+        print(f"    cache de voisins du routeur : {nb_entrees} entrée(s)")
+        remplir_cache_latence(phase, nom, essai, nb_entrees, None)
     else:
-        print("    (pas de correction : vérifie quand même la ligne pour ns_flood/fake_dhcpv6)")
+        print("    (pas de correction automatique : vérifie quand même la ligne pour fake_dhcpv6)")
 
     proc_det.wait(timeout=15)
     remise_a_zero()
