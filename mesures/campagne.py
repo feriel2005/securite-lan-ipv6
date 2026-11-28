@@ -157,7 +157,16 @@ def un_essai(nom, phase, essai, duree, mac):
 
     proc_att = lancer_attaque(nom, phase, essai, duree, mac)
     timeout_att = 70 if nom == "ns_flood" else duree + 15
+    preuve_na_pendant = False
+    if nom == "na_spoof":
+        fin = time.time() + timeout_att
+        while proc_att.poll() is None and time.time() < fin:
+            if cache_usurpe("victim1") or cache_usurpe("victim2"):
+                preuve_na_pendant = True
+            time.sleep(1)
     proc_att.wait(timeout=timeout_att)
+
+    
     if proc_ping:
         proc_ping.wait(timeout=10)
 
@@ -165,7 +174,7 @@ def un_essai(nom, phase, essai, duree, mac):
     if nom == "fake_ra":
         preuve = route_vers_attaquant("victim1") or route_vers_attaquant("victim2")
     elif nom == "na_spoof":
-        preuve = cache_usurpe("victim1") or cache_usurpe("victim2")
+        preuve = preuve_na_pendant or cache_usurpe("victim1") or cache_usurpe("victim2")
     elif nom == "fake_dhcpv6":
         preuve = dhcp_usurpe("victim1") or dhcp_usurpe("victim2")
     if preuve:
