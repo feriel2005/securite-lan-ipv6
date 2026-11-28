@@ -51,6 +51,10 @@ def cache_usurpe(victime):
     r = docker_exec(victime, "ip", "-6", "neigh", "show", ROUTEUR_IP, timeout=10)
     return "FAILED" not in r.stdout and r.stdout.strip() != "" and "lladdr" in r.stdout
 
+def dhcp_usurpe(victime, fake_dns="2001:db8:10:10::66"):
+    """§6 : la victime a reçu la configuration du faux serveur (DNS falsifié)."""
+    r = docker_exec(victime, "cat", "/etc/resolv.conf", timeout=10)
+    return fake_dns in r.stdout
 
 def demarrer_detecteur(phase, attaque, essai, duree, mac):
     os.makedirs(CAPTURES, exist_ok=True)
@@ -121,13 +125,13 @@ def lancer_attaque(nom, phase, essai, duree, mac):
             ["docker", "exec", f"{LAB}-attacker", "python3", "/project/attaques/na_spoof.py",
              "--iface", "eth1", "--phase", phase, "--essai", str(essai),
              "--routeur-ip", ROUTEUR_IP, "--victime-ip", VICTIME_IP,
-             "--mode", "mitm", "--routeur-mac", mac, "--duree", str(duree), "--silencieux"])
+             "--mode", "mitm", "--routeur-mac", mac, "--duree", str(duree)])
     if nom == "ns_flood":
         return subprocess.Popen(
             ["docker", "exec", f"{LAB}-attacker", "python3", "/project/attaques/ns_flood.py",
              "--iface", "eth1", "--phase", phase, "--essai", str(essai),
              "--prefixe", "2001:db8:10:10::/64", "--nb-adresses", "2000",
-             "--debit", "200", "--duree", str(duree), "--ping-cible", ROUTEUR_IP, "--silencieux"])
+             "--debit", "200", "--duree", str(duree), "--ping-cible", ROUTEUR_IP])
     if nom == "fake_dhcpv6":
         return subprocess.Popen(
             ["docker", "exec", f"{LAB}-attacker", "python3", "/project/attaques/fake_dhcpv6.py",
@@ -154,10 +158,12 @@ def un_essai(nom, phase, essai, duree, mac):
         proc_ping.wait(timeout=10)
 
     preuve = False
-    if nom in ("fake_ra",):
+    if nom == "fake_ra":
         preuve = route_vers_attaquant("victim1") or route_vers_attaquant("victim2")
     elif nom == "na_spoof":
         preuve = cache_usurpe("victim1") or cache_usurpe("victim2")
+    elif nom == "fake_dhcpv6":
+        preuve = dhcp_usurpe("victim1") or dhcp_usurpe("victim2")
     if preuve:
         corriger_succes(phase, nom, essai, True)
     elif nom == "ns_flood":
@@ -167,7 +173,7 @@ def un_essai(nom, phase, essai, duree, mac):
               f"latence routeur->victime : {latence} ms")
         remplir_cache_latence(phase, nom, essai, nb_entrees, latence)
     else:
-        print("    (pas de correction automatique : vérifie quand même la ligne pour fake_dhcpv6)")
+    print(f"    (pas de preuve côté victime pour {nom}, succes reste tel quel)")
 
     proc_det.wait(timeout=15)
     remise_a_zero()
