@@ -63,7 +63,7 @@ def demarrer_detecteur(phase, attaque, essai, duree, mac):
     log_f = open(chemin_log, "w")
     proc = subprocess.Popen(
         ["docker", "exec", "-i", f"{LAB}-br-hosts", "python3", "-",
-         "--phase", phase, "--essai", str(essai), "--duree", str(duree + 8),
+        "--phase", phase, "--essai", str(essai), "--duree", str(duree + 8),
          "--routeur-mac", mac],
         stdin=open(script), stdout=log_f, stderr=subprocess.STDOUT, text=True,
     )
@@ -142,9 +142,10 @@ def lancer_attaque(nom, phase, essai, duree, mac):
 def un_essai(nom, phase, essai, duree, mac):
     print(f"\n=== {nom} | {phase} | essai {essai} ===")
     remise_a_zero()
-    proc_det, chemin_log = demarrer_detecteur(phase, nom, essai, duree, mac)
+    duree_detecteur = 70 if nom == "ns_flood" else duree
+    proc_det, chemin_log = demarrer_detecteur(phase, nom, essai, duree_detecteur, mac)
     time.sleep(2)
-
+    
     proc_ping = None
     if nom == "fake_ra":
         time.sleep(1)
@@ -153,7 +154,8 @@ def un_essai(nom, phase, essai, duree, mac):
              "-i", "1", CIBLE_PING], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     proc_att = lancer_attaque(nom, phase, essai, duree, mac)
-    proc_att.wait(timeout=duree + 15)
+    timeout_att = 70 if nom == "ns_flood" else duree + 15
+    proc_att.wait(timeout=timeout_att)
     if proc_ping:
         proc_ping.wait(timeout=10)
 
