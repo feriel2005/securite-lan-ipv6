@@ -7,7 +7,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "attaques"))
-from mesurer_cache_routeur import compter_cache  # noqa: E402
+from mesurer_cache_routeur import compter_cache, ping_depuis_conteneur  # noqa: E402
 
 LAB = "clab-ipv6lab"
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -162,8 +162,10 @@ def un_essai(nom, phase, essai, duree, mac):
         corriger_succes(phase, nom, essai, True)
     elif nom == "ns_flood":
         nb_entrees, _ = compter_cache(f"{LAB}-router", "eth1")
-        print(f"    cache de voisins du routeur : {nb_entrees} entrée(s)")
-        remplir_cache_latence(phase, nom, essai, nb_entrees, None)
+        latence = ping_depuis_conteneur(f"{LAB}-router", VICTIME_IP, count=4)
+        print(f"    cache de voisins du routeur : {nb_entrees} entrée(s), "
+              f"latence routeur->victime : {latence} ms")
+        remplir_cache_latence(phase, nom, essai, nb_entrees, latence)
     else:
         print("    (pas de correction automatique : vérifie quand même la ligne pour fake_dhcpv6)")
 
