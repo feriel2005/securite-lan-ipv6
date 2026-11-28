@@ -52,7 +52,7 @@ def cache_usurpe(victime):
 def demarrer_detecteur(phase, attaque, essai, duree, mac):
     os.makedirs(CAPTURES, exist_ok=True)
     chemin_log = os.path.join(CAPTURES, f"detection_{phase}_{attaque}_{essai}.log")
-    script = os.path.join(RACINE, "detection", "detecteur.py")
+    script = os.path.join(RACINE, "detection", "detection.py")
     log_f = open(chemin_log, "w")
     proc = subprocess.Popen(
         ["docker", "exec", "-i", f"{LAB}-br-hosts", "python3", "-",
